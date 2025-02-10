@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    command: /app/venv/bin/python /app/manage.py runserver 0.0.0.0:8000
+    environment:
+      - DJANGO_DB_HOST=mongodb
+      - DJANGO_DB_NAME=restaurant_db
+      - DJANGO_DB_USER= # Може да биде празно ако MongoDB нема автентикација
+      - DJANGO_DB_PASSWORD=
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    command: ["mongod", "--noauth"] 
+
+volumes:
+  mongo_data:
