@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <a href="{% url 'Add restaurant' %}">Add restaurant</a>
+{% for r in restaurants %}
+            <h3>{{r.name}}</h3>
+            {{r.address}} <br/>
+            {{r.phone}} <br/>
+            {{r.email}} <br/>
+            {% if r.capacity > 10 %}
+                {{r.capacity}} <br/>
+            {% else %}  
+                <p>No capacity.</p>
+            {% endif %}
+            <br/>
+            <a href="{% url 'edit restaurant' r.id %}">Edit</a>
+            <a href="{% url 'restaurant details' r.id %}">Details</a>
+            <a href="{% url 'delete restaurant' r.id %}">Delete</a>
+        {% endfor %}
+{% endblock %}
+
+<!-- <html>
+    <body>
+        {% for r in restaurants %}
+            <h3>{{r.name}}</h3>
+            {{r.address}} <br/>
+            {{r.phone}} <br/>
+            {{r.email}} <br/>
+            {% if r.capacity > 10 %}
+                {{r.capacity}} <br/>
+            {% else %}  
+                <p>No capacity.</p>
+            {% endif %}
+            <br/>
+        {% endfor %}
+    </body>
+</html> -->
