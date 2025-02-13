@@ -2,17 +2,18 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    image: atanasovskaelena20/kiii_project_app:latest  # Користи слика од DockerHub
     ports:
       - "8000:8000"
     depends_on:
-      - mongodb
-    command: python manage.py runserver 0.0.0.0:8000
+      mongodb:
+        condition: service_healthy  # Почекај додека MongoDB не биде подготвен
     environment:
       - DJANGO_DB_HOST=mongodb
       - DJANGO_DB_NAME=restaurant_db
-      - DJANGO_DB_USER= # Може да биде празно ако MongoDB нема автентикација
+      - DJANGO_DB_USER=
       - DJANGO_DB_PASSWORD=
+
   mongodb:
     image: mongo:6.0
     container_name: mongodb
@@ -21,7 +22,13 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
-    command: ["mongod", "--noauth"] 
+    command: ["mongod", "--noauth"]
+    healthcheck:  # Додавање healthcheck за сигурно стартување на MongoDB
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://localhost:27017/test --quiet
+      interval: 10s
+      retries: 5
+      start_period: 10s
 
 volumes:
   mongo_data:
+
